@@ -1,4 +1,5 @@
 #include<stdio.h>
+#include<stdlib.h>
 #include<string.h>
 struct exp
 {
@@ -13,14 +14,20 @@ int main()
      int week, monthly_salary;
      double weekly_budget;
     char choice;
+    system("color 09");
+    printf("====================================\n");
+    printf("EXPENSE ENTRY \n");
+    printf("====================================\n");
     printf("Enter your monthly salary :");
     scanf("%d",&monthly_salary);
     if(monthly_salary<=0)
     {
+    	system("color 04"); 
         printf("Invalid salary input. Please enter a positive number.\n");
         return 1; 
     }
     else{
+    	  system("color 09");
     printf("\n Your monthly salary is : %d\n", monthly_salary);
     printf("Your weekly budget is : %.3lf\n", (monthly_salary / 4.0));
     }
