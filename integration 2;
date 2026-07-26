@@ -1,0 +1,167 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+void displayPreviousData();
+void displayChart();
+struct exp
+{
+    int week;
+    double food, transport, entertainment, utility;
+    char category[100][100];
+    double amount[100];
+} Expense[100];
+int main()
+{
+    FILE *fp;
+     int week, monthly_salary;
+     double weekly_budget;
+    char choice;
+    system("color 0B");
+    printf("====================================\n");
+    printf("EXPENSE ENTRY \n");
+    printf("====================================\n");
+    printf("Enter your monthly salary :");
+    scanf("%d",&monthly_salary);
+    if(monthly_salary<=0)
+    {
+        printf("Invalid salary input. Please enter a positive number.\n");
+        return 1; 
+    }
+    else{
+    printf("\n Your monthly salary is : %d\n", monthly_salary);
+    printf("Your weekly budget is : %.3lf\n", (monthly_salary / 4.0));
+    }
+    printf("Enter the number of weeks(1-4): ");
+    scanf("%d", &week);
+    fp= fopen("expenses.csv", "w");
+    int i=0;
+     for (i = 0; i < week; i++)
+    {
+        printf("\nWeek %d\n", i + 1);
+        Expense[i].week = i + 1;
+        printf("Food: ");
+        scanf("%lf", &Expense[i].food);
+        fprintf(fp, "%d,Food,%.2lf\n", Expense[i].week, Expense[i].food);
+        printf("Transport: ");
+        scanf("%lf", &Expense[i].transport);
+        fprintf(fp, "%d,Transport,%.2lf\n", Expense[i].week, Expense[i].transport);
+        printf("Entertainment: ");
+        scanf("%lf", &Expense[i].entertainment);
+        fprintf(fp, "%d,Entertainment,%.2lf\n", Expense[i].week, Expense[i].entertainment);
+        printf("Utility: ");
+        scanf("%lf", &Expense[i].utility);
+        fprintf(fp, "%d,Utility,%.2lf\n", Expense[i].week, Expense[i].utility);
+        int j = 0;
+        do
+        {
+            printf("Do you want to add a custom category? (y/n): ");
+            scanf(" %c", &choice);
+            if (choice == 'y' || choice == 'Y')
+            {
+                printf("Category: ");
+                scanf("%99s", Expense[i].category[j]);
+                printf("Amount: ");
+                scanf("%lf", &Expense[i].amount[j]);
+                fprintf(fp, "%d,%s,%.2lf\n",
+                        Expense[i].week,
+                        Expense[i].category[j],
+                        Expense[i].amount[j]);
+
+                j++;
+            }
+        } while (choice == 'y' || choice == 'Y');
+    }
+    fclose(fp);
+    printf("\n All Expenses saved successfully to expenses.csv\n");
+ displayPreviousData();
+ displayChart();
+    return 0;
+}
+void displayPreviousData()
+{
+    FILE *fp = fopen("expenses.csv", "r");
+
+    if (fp == NULL)
+    {
+        printf("No expenses found yet.\n");
+        return;
+    }
+
+    int week;
+    char category[100];
+    double amount;
+
+    printf("\n---- Previous Expenses ----\n");
+    printf("Week   Category          Amount\n");
+
+    while (fscanf(fp, "%d,%99[^,],%lf\n", &week, category, &amount) == 3)
+    {
+        printf("%-6d %-16s %.2lf\n", week, category, amount);
+    }
+
+    fclose(fp);
+}
+
+void displayChart()
+{
+    FILE *fp = fopen("expenses.csv", "r");
+
+    if (fp == NULL)
+    {
+        printf("No expenses found yet.\n");
+        return;
+    }
+
+    double food = 0, transport = 0, entertainment = 0, utility = 0;
+
+    int week;
+    char category[100];
+    double amount;
+
+    while (fscanf(fp, "%d,%99[^,],%lf\n", &week, category, &amount) == 3)
+    {
+        if (strcmp(category, "Food") == 0)
+        {
+            food = food + amount;
+        }
+        else if (strcmp(category, "Transport") == 0)
+        {
+            transport = transport + amount;
+        }
+        else if (strcmp(category, "Entertainment") == 0)
+        {
+            entertainment = entertainment + amount;
+        }
+        else if (strcmp(category, "Utility") == 0)
+        {
+            utility = utility + amount;
+        }
+    }
+
+    fclose(fp);
+
+    printf("\n---- Expense Chart ----\n");
+
+    printf("Food          ");
+    int i;
+    for (i = 0; i < food / 10; i++)
+        printf("*");
+    printf(" %.0lf\n", food);
+
+    printf("Transport     ");
+    for ( i = 0; i < transport / 10; i++)
+        printf("*");
+    printf(" %.0lf\n", transport);
+
+    printf("Entertainment ");
+    for ( i = 0; i < entertainment / 10; i++)
+        printf("*");
+    printf(" %.0lf\n", entertainment);
+
+    printf("Utility       ");
+    for ( i = 0; i < utility / 10; i++)
+        printf("*");
+    printf(" %.0lf\n", utility);
+}
+
+

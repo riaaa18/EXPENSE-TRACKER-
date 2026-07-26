@@ -1,0 +1,77 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+struct exp
+{
+    int week;
+    double food, transport, entertainment, utility;
+    char category[100][100];
+    double amount[100];
+} Expense[100];
+int main()
+{
+    FILE *fp;
+     int week, monthly_salary;
+     double weekly_budget;
+    char choice;
+    system("color 09");
+    printf("====================================\n");
+    printf("EXPENSE ENTRY \n");
+    printf("====================================\n");
+    printf("Enter your monthly salary :");
+    scanf("%d",&monthly_salary);
+    if(monthly_salary<=0)
+    {
+    	system("color 04"); 
+        printf("Invalid salary input. Please enter a positive number.\n");
+        return 1; 
+    }
+    else{
+    	  system("color 09");
+    printf("\n Your monthly salary is : %d\n", monthly_salary);
+    printf("Your weekly budget is : %.3lf\n", (monthly_salary / 4.0));
+    }
+    printf("Enter the number of weeks(1-4): ");
+    scanf("%d", &week);
+    fp= fopen("expenses.csv", "w");
+     for (int i = 0; i < week; i++)
+    {
+        printf("\nWeek %d\n", i + 1);
+        Expense[i].week = i + 1;
+        printf("Food: ");
+        scanf("%lf", &Expense[i].food);
+        fprintf(fp, "%d,Food,%.2lf\n", Expense[i].week, Expense[i].food);
+        printf("Transport: ");
+        scanf("%lf", &Expense[i].transport);
+        fprintf(fp, "%d,Transport,%.2lf\n", Expense[i].week, Expense[i].transport);
+        printf("Entertainment: ");
+        scanf("%lf", &Expense[i].entertainment);
+        fprintf(fp, "%d,Entertainment,%.2lf\n", Expense[i].week, Expense[i].entertainment);
+        printf("Utility: ");
+        scanf("%lf", &Expense[i].utility);
+        fprintf(fp, "%d,Utility,%.2lf\n", Expense[i].week, Expense[i].utility);
+        int j = 0;
+        do
+        {
+            printf("Do you want to add a custom category? (y/n): ");
+            scanf(" %c", &choice);
+            if (choice == 'y' || choice == 'Y')
+            {
+                printf("Category: ");
+                scanf("%99s", Expense[i].category[j]);
+                printf("Amount: ");
+                scanf("%lf", &Expense[i].amount[j]);
+                fprintf(fp, "%d,%s,%.2lf\n",
+                        Expense[i].week,
+                        Expense[i].category[j],
+                        Expense[i].amount[j]);
+
+                j++;
+            }
+        } while (choice == 'y' || choice == 'Y');
+    }
+    fclose(fp);
+    printf("\n All Expenses saved successfully to expenses.csv\n");
+    return 0;
+}
+
